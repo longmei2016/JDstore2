@@ -1,0 +1,16 @@
+<h2> Product lists </h2>
+<table>
+  <thead>
+    <tr>
+      <td> ID</td>
+      <td> Product title </td>
+      <td> price </td>
+      <td> quantity </td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <%= render :partial => "product_item", :collection => @products, :as => :product %>
+    </tr>
+  </tbody>
+</table>
