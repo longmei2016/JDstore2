@@ -6,6 +6,32 @@ class Order < ApplicationRecord
   validates :shipping_address, presence: true
   has_many :product_lists
   before_create :generate_token
+  include AASM
+
+  aasm do
+    state :order_placed, initial :true
+    state :paid
+    state :shipping
+    state :shipped
+    state :order_cancelled
+    state :good_returned
+
+    event :make_payment, after_commit: :pay! do
+      translations from: :order_placed, to: :paid
+    end
+    event :ship do
+      translations from: :paid, to: :shipping
+    end
+    event :deliver do
+      translations from: :shipping, to: :shipped
+    end
+    event :return_good do
+      translations from: :shipped, to: :good_returned
+    end
+    event :cancel_order do
+      translations from: [:order_placed, :paid], to: :order_cancelled
+    end
+  end
 
   def generate_token
     self.token = SecureRandom.uuid
